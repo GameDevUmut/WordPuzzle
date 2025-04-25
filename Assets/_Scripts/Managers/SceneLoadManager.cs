@@ -27,19 +27,15 @@ namespace Managers
 
         [SerializeField] private GameObject loadingScreenObject;
         [SerializeField] private GameObject splashScreenObject;
-        [SerializeField] private Image splashScreenLoadingBarFill;
-        [SerializeField] private Image loadingScreenLoadingBarFill;
         
-
         #endregion
 
         #region Fields
 
         // private IAnalyticsService _iAnalyticsService;
 
-        public SceneInstance LastScfeneInstance => _sceneStack.Peek();
+        public SceneInstance LastSceneInstance => _sceneStack.Peek();
         private Stack<SceneInstance> _sceneStack = new Stack<SceneInstance>();
-        private DateTime _splashScreenOpenedTime;
         private ISceneLoadService _sceneLoadServiceImplementation;
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -50,41 +46,25 @@ namespace Managers
         private async void Awake()
         {
             _cancellationTokenSource = new CancellationTokenSource();
-            _splashScreenOpenedTime = DateTime.Now;
-            LogSplashScreenOpened();
-
             await UniTask.Delay(100);
             
             LoadMainScene();
         }
-
-        // [Inject]
-        // private void Initialize(IAnalyticsService iAnalyticsService)
-        // {
-        //     _iAnalyticsService = iAnalyticsService;
-        // }
-
+        
         #endregion
 
         #region Private Methods
-
-   
-
+        
         private async UniTask DirectlyPlayGame()
         {
             ToggleSplashScreen(true);
-
-            // Start at 0
-            FillLoadingBar(0f);
-
+            
             var gameLoader = Addressables.LoadSceneAsync(gameScene, LoadSceneMode.Additive, false);
             
             UpdateProgressBar(gameLoader, 0f, 0.3f, _cancellationTokenSource.Token);
 
             _sceneStack.Push(await gameLoader);
-            FillLoadingBar(0.5f);
             gameLoader.Result.ActivateAsync();
-            LogSplashScreenClosed();
         }
 
         private async Task UpdateProgressBar(AsyncOperationHandle<SceneInstance> gameLoader, float startProgress = 0f, float speed = 0.5f, CancellationToken cancellationToken = default)
@@ -93,26 +73,10 @@ namespace Managers
           while (!gameLoader.IsDone && (cancellationToken == default || !cancellationToken.IsCancellationRequested))
             {
                 progress = Mathf.MoveTowards(progress, 1f, Time.deltaTime * speed);
-                FillLoadingBar(progress);
                 await UniTask.Yield();
             }
         }
-
-        #region Event Logging
-
-        private void LogSplashScreenClosed()
-        {
-            var timeSpent = DateTime.Now - _splashScreenOpenedTime;
-            
-        }
-
-        private void LogSplashScreenOpened()
-        {
-          
-        }
-
-        #endregion
-
+        
         private async UniTask LoadMainScene()
         {
             ToggleSplashScreen(true);
@@ -149,7 +113,6 @@ namespace Managers
             var sceneInstance = await sceneLoader;
             _sceneStack.Push(sceneInstance);
             
-            FillLoadingBar(1f);
             await sceneLoader.Result.ActivateAsync();
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
         }
@@ -169,31 +132,17 @@ namespace Managers
 
         public void ToggleLoadingScreen(bool state)
         {
-            // if(!state)
-            //     loadingScreenLoadingBarFill.fillAmount = 0f;
-            
             loadingScreenObject.SetActive(state);
         }
 
         public void ToggleSplashScreen(bool state)
         {
-            // if(!state)
-            //     splashScreenLoadingBarFill.fillAmount = 0f;
-            
             splashScreenObject.SetActive(state);
         }
-
-        public void FillLoadingBar(float value)
-        {
-            return; //To be removed
-            if(splashScreenObject.activeSelf)
-                splashScreenLoadingBarFill.fillAmount = value;
-            else if(loadingScreenObject.activeSelf)
-                loadingScreenLoadingBarFill.fillAmount = value;
-        }
-
+        
         public async UniTask Load(ISceneLoadService.SceneName sceneName)
         {
+            ToggleLoadingScreen(true);
             switch (sceneName)
             {
                 case ISceneLoadService.SceneName.MainScene:
@@ -203,6 +152,8 @@ namespace Managers
                     await LoadGameScene();
                     break;
             }
+            
+            ToggleLoadingScreen(false);
         }
         #endregion
     }
