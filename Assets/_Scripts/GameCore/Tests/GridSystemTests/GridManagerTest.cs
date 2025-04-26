@@ -5,16 +5,16 @@ using GameCore.GridSystem;
 namespace GameCore.Tests.GridSystemTests
 {
     [TestFixture]
-    public class GridControllerTest
+    public class GridManagerTest
     {
         [Test]
         public void CreateGrid_ShouldInitializeGridWithRandomCharacters()
         {
             // Arrange
             var gameObject = new GameObject();
-            var gridController = gameObject.AddComponent<GridController>();
-            int expectedRows = Mathf.RoundToInt(GridController.GridSize.y);
-            int expectedCols = Mathf.RoundToInt(GridController.GridSize.x);
+            var gridController = gameObject.AddComponent<GridManager>();
+            int expectedRows = Mathf.RoundToInt(GridManager.GridSize.y);
+            int expectedCols = Mathf.RoundToInt(GridManager.GridSize.x);
 
             // Act
             gridController.CreateGrid();
@@ -36,7 +36,7 @@ namespace GameCore.Tests.GridSystemTests
                     Assert.IsNotNull(cell, $"Cell at ({r}, {c}) should not be null.");
 
                     char cellChar = cell.Character;
-                    if (!GridController.TurkishAlphabet.Contains(cellChar))
+                    if (!GridManager.TurkishAlphabet.Contains(cellChar))
                     {
                         allCharsValid = false;
                         Debug.LogError($"Invalid character '{cellChar}' found at ({r}, {c}).");
