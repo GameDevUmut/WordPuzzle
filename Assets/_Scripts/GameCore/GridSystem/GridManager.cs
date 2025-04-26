@@ -1,29 +1,48 @@
+using Interfaces;
 using UnityEngine;
 
 namespace GameCore.GridSystem
 {
-    public class GridController : MonoBehaviour
+    public class GridManager : MonoBehaviour, IGridService
     {
+        /// <summary>
+        /// Constant string containing all characters of the Turkish alphabet.
+        /// </summary>
+        public const string TurkishAlphabet = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ";
         /// <summary>
         /// Defines the dimensions (columns x rows) of the grid.
         /// Note: Vector2 components are float, cast to int when using.
         /// </summary>
-        public static Vector2 GridSize = new Vector2(5, 5); 
+        public static Vector2 GridSize = new Vector2(5, 5);
 
-        /// <summary>
-        /// Constant string containing all characters of the Turkish alphabet.
-        /// </summary>
-        public const string TurkishAlphabet = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ"; 
+        #region Fields
 
         /// <summary>
         /// Holds the reference to the current game grid instance.
         /// </summary>
         private Grid currentGrid;
 
+        #endregion
+
+        #region Properties
+
         /// <summary>
         /// Public getter for the current grid instance.
         /// </summary>
-        public Grid CurrentGrid => currentGrid; 
+        public Grid CurrentGrid => currentGrid;
+
+        #endregion
+
+        #region Unity Methods
+
+        void Awake()
+        {
+            CreateGrid();
+        }
+
+        #endregion
+
+        #region Public Methods
 
         /// <summary>
         /// Creates and initializes a new game grid based on GridSize.
@@ -46,26 +65,36 @@ namespace GameCore.GridSystem
             {
                 for (int c = 0; c < currentGrid.Columns; c++)
                 {
-                    
                     int randomIndex = Random.Range(0, TurkishAlphabet.Length);
                     char randomChar = TurkishAlphabet[randomIndex];
 
-                    
+
                     Cell newCell = new Cell(randomChar);
 
-                    
+
                     currentGrid[r, c] = newCell;
                 }
             }
 
             Debug.Log($"Grid created with size {currentGrid.Columns}x{currentGrid.Rows}");
-            
         }
 
-        
-        void Start()
+        #endregion
+
+        #region IGridService Members
+
+        public int GridRows => currentGrid.Rows;
+        public int GridColumns => currentGrid.Columns;
+
+        public char GetCellCharacter(int row, int column) => currentGrid[row, column].Character;
+
+        public bool TestifyWord(string word)
         {
-            CreateGrid();
+            Debug.Log(word);
+            //return random value of true or false
+            return Random.Range(0, 2) == 1;
         }
+
+        #endregion
     }
 }
