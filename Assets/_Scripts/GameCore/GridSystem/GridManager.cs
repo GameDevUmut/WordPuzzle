@@ -91,7 +91,8 @@ namespace GameCore.GridSystem
         public bool TestifyWord(string word)
         {
             Debug.Log(word);
-            return true;
+            //return random value of true or false
+            return Random.Range(0, 2) == 1;
         }
 
         #endregion

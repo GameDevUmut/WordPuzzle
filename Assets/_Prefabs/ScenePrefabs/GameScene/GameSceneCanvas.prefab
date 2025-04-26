@@ -317,6 +317,8 @@ MonoBehaviour:
   cellParent: {fileID: 8778799148849333907}
   gridLayoutGroup: {fileID: 7558635464582391023}
   formedSentenceText: {fileID: 4999097819245945084}
+  formedSentenceErrorColor: {r: 1, g: 0, b: 0, a: 1}
+  formedSentenceSuccessColor: {r: 0, g: 1, b: 0.0071139336, a: 1}
 --- !u!222 &5794838669108972350
 CanvasRenderer:
   m_ObjectHideFlags: 0
