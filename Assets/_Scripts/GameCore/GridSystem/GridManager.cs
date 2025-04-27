@@ -1,5 +1,6 @@
 using Interfaces;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace GameCore.GridSystem
 {
@@ -39,7 +40,7 @@ namespace GameCore.GridSystem
         {
             CreateGrid();
         }
-
+        
         #endregion
 
         #region Public Methods
@@ -78,7 +79,7 @@ namespace GameCore.GridSystem
 
             Debug.Log($"Grid created with size {currentGrid.Columns}x{currentGrid.Rows}");
         }
-
+        
         #endregion
 
         #region IGridService Members
@@ -87,13 +88,7 @@ namespace GameCore.GridSystem
         public int GridColumns => currentGrid.Columns;
 
         public char GetCellCharacter(int row, int column) => currentGrid[row, column].Character;
-
-        public bool TestifyWord(string word)
-        {
-            Debug.Log(word);
-            //return random value of true or false
-            return Random.Range(0, 2) == 1;
-        }
+        
 
         #endregion
     }
