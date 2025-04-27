@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using GameCore.GridSystem;
 using GameCore.Trie;
 using NUnit.Framework;
@@ -13,7 +15,7 @@ namespace GameCore.Tests.TrieTests
     public class TrieTestSuite
     {
         [Test]
-        public void CreateGridAndTrie_TrySearch()
+        public async Task CreateGridAndTrie_TrySearch()
         {
             // Arrange
             List<string> words = new List<string>()
@@ -101,8 +103,7 @@ namespace GameCore.Tests.TrieTests
             Assert.AreEqual(grid.Rows, expectedRows, "Grid row count should match expected size.");
             Assert.AreEqual(grid.Columns, expectedCols, "Grid column count should match expected size.");
             Assert.IsNotNull(grid[1,1], "Grid should exist.");
-
-            NativeList<FixedString64Bytes> nativeList = default;
+            
             try
             {
                 using (Trie.Trie trie = new Trie.Trie())
@@ -111,12 +112,7 @@ namespace GameCore.Tests.TrieTests
                     
                     Debug.Log($"Trie built with {words.Count} words.");
 
-                    var result = trie.FindAllWordsInGrid(grid);
-
-                    result.Item1.Complete();
-
-                    nativeList = result.Item2;
-                    
+                    var nativeList = Task.Run(async () => await trie.FindAllWordsInGrid(grid)).GetAwaiter().GetResult();
                     Debug.Log($"Found words count: {nativeList.Length}");
                     if (nativeList.Length > 0)
                     {
@@ -127,18 +123,19 @@ namespace GameCore.Tests.TrieTests
                         }
                         Debug.Log("--- End Found Words ---");
                     }
+                    
+                    if (nativeList.IsCreated)
+                    {
+                        nativeList.Dispose();
+                    }
 
                 }
-            }
-            finally
+            } catch (System.Exception e)
             {
-                if (nativeList.IsCreated)
-                {
-                    nativeList.Dispose();
-                }
+                Debug.LogError($"Error during Trie operations: {e.Message}");
             }
-
-
+   
+            
             Object.DestroyImmediate(gameObject);
         }
     }

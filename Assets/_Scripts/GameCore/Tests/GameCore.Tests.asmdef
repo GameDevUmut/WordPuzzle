@@ -5,7 +5,8 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "GameCore",
-        "Unity.Collections"
+        "Unity.Collections",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
