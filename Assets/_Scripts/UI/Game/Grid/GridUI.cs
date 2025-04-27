@@ -61,9 +61,9 @@ namespace UI.Game.Grid
             formedSentenceText.text = _stringBuilder.ToString();
         }
 
-        public void OnSearchButtonClick()
+        public async void OnSearchButtonClick()
         {
-            var returnList = _trieService.Search();
+            var returnList = await _trieService.Search();
             foreach (var word in returnList)
             {
                 Debug.Log(word);

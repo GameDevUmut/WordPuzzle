@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using GameCore.GridSystem;
 using Interfaces;
 using Unity.Collections;
@@ -92,26 +93,17 @@ namespace GameCore.Trie
             _trie.Build(_dictionary);
         }
 
-        public List<string> Search()
+        public async UniTask<List<string>> Search()
         {
             NativeList<FixedString64Bytes> nativeList = default;
             List<string> returnList = new List<string>();
 
-            try // Ensure nativeList is disposed even if errors occur
+            try 
             {
-                var result = _trie.FindAllWordsInGrid(_gridManager.CurrentGrid);
-
-                // NOTE: Since StandardTrie.FindAllWordsInGrid is now synchronous,
-                // result.Item1 (JobHandle) is default and Complete() does nothing,
-                // but it's harmless to leave it for API compatibility if switching back.
-                // result.Item1.Complete(); // No longer strictly necessary for the sync StandardTrie
-
-                nativeList = result.Item2;
-
-                // Manual conversion from NativeList<FixedString...> to List<string>
+                nativeList = await _trie.FindAllWordsInGrid(_gridManager.CurrentGrid);
                 if (nativeList.IsCreated && nativeList.Length > 0)
                 {
-                    returnList.Capacity = nativeList.Length; // Optimize list capacity
+                    returnList.Capacity = nativeList.Length;
                     for (int i = 0; i < nativeList.Length; i++)
                     {
                         returnList.Add(nativeList[i].ToString());
@@ -120,7 +112,7 @@ namespace GameCore.Trie
             }
             finally
             {
-                 // Dispose the NativeList allocated by FindAllWordsInGrid
+                
                 if (nativeList.IsCreated)
                 {
                     nativeList.Dispose();

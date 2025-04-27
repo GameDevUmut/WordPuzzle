@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
@@ -75,26 +77,29 @@ namespace GameCore.Trie
             Debug.Log($"Standard Trie built with {wordCount} valid words.");
         }
 
-        public (JobHandle, NativeList<FixedString64Bytes>) FindAllWordsInGrid(Grid grid)
+        public async UniTask<NativeList<FixedString64Bytes>> FindAllWordsInGrid(Grid grid)
         {
-            if (!isBuilt) { Debug.LogError("Trie must be built."); return (default, default); }
-            if (grid == null || grid.Rows == 0 || grid.Columns == 0) { Debug.LogError("Invalid grid."); return (default, default); }
-            if (root.Children.Count == 0) { Debug.LogWarning("Trie is empty."); return (default, new NativeList<FixedString64Bytes>(Allocator.Persistent)); }
+            if (!isBuilt) { Debug.LogError("Trie must be built."); return default; }
+            if (grid == null || grid.Rows == 0 || grid.Columns == 0) { Debug.LogError("Invalid grid."); return default; }
+            if (root.Children.Count == 0) { Debug.LogWarning("Trie is empty."); return new NativeList<FixedString64Bytes>(Allocator.Persistent); }
 
-            var foundWords = new NativeList<FixedString64Bytes>(grid.Rows * grid.Columns * 5, allocator);
-
-            bool[,] visited = new bool[grid.Rows, grid.Columns];
-            char[] currentPath = new char[64];
-
-            for (int r = 0; r < grid.Rows; r++)
+            var foundWords = await Task.Run(() =>
             {
-                for (int c = 0; c < grid.Columns; c++)
-                {
-                    DepthFirstSearch(grid, r, c, root, 0, visited, currentPath, foundWords);
-                }
-            }
+                var wordsList = new NativeList<FixedString64Bytes>(grid.Rows * grid.Columns * 5, allocator);
+                bool[,] visited = new bool[grid.Rows, grid.Columns];
+                char[] currentPath = new char[MaxPathLength];
 
-            return (default, foundWords);
+                for (int r = 0; r < grid.Rows; r++)
+                {
+                    for (int c = 0; c < grid.Columns; c++)
+                    {
+                        DepthFirstSearch(grid, r, c, root, 0, visited, currentPath, wordsList);
+                    }
+                }
+                return wordsList;
+            });
+
+            return foundWords;
         }
 
         private static readonly int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
