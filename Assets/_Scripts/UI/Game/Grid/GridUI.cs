@@ -63,7 +63,7 @@ namespace UI.Game.Grid
 
         public async void OnSearchButtonClick()
         {
-            var returnList = await _trieService.Search();
+            var returnList = await _trieService.SearchPossibleWords();
             foreach (var word in returnList)
             {
                 Debug.Log(word);
@@ -112,7 +112,7 @@ namespace UI.Game.Grid
         private async UniTask CheckWord()
         {
             _isWritingLocked = true;
-            var success =  _trieService.TestifyWord(_stringBuilder.ToString());
+            var success = await _trieService.TestifyWord(_stringBuilder.ToString());
 
             Color targetColor = success ? formedSentenceSuccessColor : formedSentenceErrorColor;
             Sequence sequence = DOTween.Sequence();

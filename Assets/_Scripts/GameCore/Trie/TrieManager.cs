@@ -93,7 +93,7 @@ namespace GameCore.Trie
             _trie.Build(_dictionary);
         }
 
-        public async UniTask<List<string>> Search()
+        public async UniTask<List<string>> SearchPossibleWords()
         {
             NativeList<FixedString64Bytes> nativeList = default;
             List<string> returnList = new List<string>();
@@ -122,13 +122,10 @@ namespace GameCore.Trie
 
             return returnList;
         }
-
-    
-        public bool TestifyWord(string word)
+        
+        public async UniTask<bool> TestifyWord(string word)
         {
-            Debug.Log(word);
-            //return random value of true or false
-            return Random.Range(0, 2) == 1;
+            return await _trie.FindSingleWord(word);
         }
     }
 }

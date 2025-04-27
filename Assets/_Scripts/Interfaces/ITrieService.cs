@@ -6,7 +6,7 @@ namespace Interfaces
 {
     public interface ITrieService
     {
-        UniTask<List<string>> Search();
-        bool TestifyWord(string word);
+        UniTask<List<string>> SearchPossibleWords();
+        UniTask<bool> TestifyWord(string word);
     }
 }
