@@ -60,16 +60,7 @@ namespace UI.Game.Grid
             _stringBuilder.Append(cell.CharacterValue);
             formedSentenceText.text = _stringBuilder.ToString();
         }
-
-        public async void OnSearchButtonClick()
-        {
-            var returnList = await _trieService.SearchPossibleWords();
-            foreach (var word in returnList)
-            {
-                Debug.Log(word);
-            }
-        }
-
+        
         #endregion
 
         #region Private Methods

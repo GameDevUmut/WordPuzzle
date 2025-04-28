@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using GameCore.GridSystem;
 using Interfaces;
@@ -71,8 +72,7 @@ namespace GameCore.Trie
                 }
             }
 
-
-            return returnList;
+            return returnList.Distinct().ToList();
         }
         
         public async UniTask<bool> TestifyWord(string word)
