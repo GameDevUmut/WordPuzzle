@@ -42,7 +42,7 @@ namespace GameCore.Trie
             }
             
             _trie = new Trie();
-            _trie.Build(_dictionaryService.LoadedWords);
+            await _trie.Build(_dictionaryService.LoadedWords);
         }
 
         public async UniTask<List<string>> SearchPossibleWords()
