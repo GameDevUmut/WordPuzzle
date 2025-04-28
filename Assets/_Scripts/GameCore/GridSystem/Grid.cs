@@ -1,6 +1,5 @@
 using UnityEngine;
-
-
+using Unity.Collections; // Added for NativeArray
 
 namespace GameCore.GridSystem
 {
@@ -33,9 +32,7 @@ namespace GameCore.GridSystem
         {
             if (rows <= 0 || columns <= 0)
             {
-                
                 Debug.LogError($"Invalid grid dimensions: Rows ({rows}) and Columns ({columns}) must be positive.");
-                
                 Rows = 1;
                 Columns = 1;
             }
@@ -45,6 +42,12 @@ namespace GameCore.GridSystem
                 Columns = columns;
             }
             cells = new Cell[Rows, Columns];
+            // Ensure cells are initialized if needed, e.g., fill with default Cells
+            // for (int r = 0; r < Rows; r++) {
+            //     for (int c = 0; c < Columns; c++) {
+            //         cells[r, c] = new Cell(' '); // Or some default character
+            //     }
+            // }
         }
 
         /// <summary>
@@ -63,18 +66,19 @@ namespace GameCore.GridSystem
                     return cells[row, column];
                 }
                 Debug.LogError($"Attempted to access invalid grid coordinate: ({row}, {column})");
-                return null; 
+                return null;
             }
             set
             {
                 if (IsValidCoordinate(row, column))
                 {
+                    // Ensure the cell object exists if setting for the first time
+                    // Or handle null value assignment appropriately
                     cells[row, column] = value;
                 }
                 else
                 {
                     Debug.LogError($"Attempted to set invalid grid coordinate: ({row}, {column})");
-                    
                 }
             }
         }
@@ -90,7 +94,24 @@ namespace GameCore.GridSystem
             return row >= 0 && row < Rows && column >= 0 && column < Columns;
         }
 
-        
-        
+        /// <summary>
+        /// Converts the grid's characters into a flat NativeArray for use in Jobs.
+        /// </summary>
+        /// <param name="allocator">The allocator to use for the NativeArray.</param>
+        /// <returns>A NativeArray containing grid characters (row-major order).</returns>
+        public NativeArray<char> ToNativeCharArray(Allocator allocator)
+        {
+            var flatArray = new NativeArray<char>(Rows * Columns, allocator, NativeArrayOptions.UninitializedMemory);
+            for (int r = 0; r < Rows; r++)
+            {
+                for (int c = 0; c < Columns; c++)
+                {
+                    // Handle null cells if they can occur
+                    flatArray[r * Columns + c] = (cells[r, c] != null) ? cells[r, c].Character : '\0'; // Use null char for empty/null cells
+                }
+            }
+            return flatArray;
+        }
+
     }
 }

@@ -35,6 +35,7 @@ namespace UI.Game.Grid
         private StringBuilder _stringBuilder = new StringBuilder();
         private Color _formedSentenceDefaultColor;
         private bool _isWritingLocked = false;
+        private ITrieService _trieService;
 
         #endregion
 
@@ -60,13 +61,23 @@ namespace UI.Game.Grid
             formedSentenceText.text = _stringBuilder.ToString();
         }
 
+        public async void OnSearchButtonClick()
+        {
+            var returnList = await _trieService.SearchPossibleWords();
+            foreach (var word in returnList)
+            {
+                Debug.Log(word);
+            }
+        }
+
         #endregion
 
         #region Private Methods
 
         [Inject]
-        private void Construct(IGridService gridService)
+        private void Construct(IGridService gridService, ITrieService trieService)
         {
+            _trieService = trieService;
             _gridService = gridService;
         }
 
@@ -101,7 +112,7 @@ namespace UI.Game.Grid
         private async UniTask CheckWord()
         {
             _isWritingLocked = true;
-            var success =  _gridService.TestifyWord(_stringBuilder.ToString());
+            var success = await _trieService.TestifyWord(_stringBuilder.ToString());
 
             Color targetColor = success ? formedSentenceSuccessColor : formedSentenceErrorColor;
             Sequence sequence = DOTween.Sequence();
