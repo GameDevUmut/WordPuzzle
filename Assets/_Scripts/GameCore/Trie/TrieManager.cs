@@ -1,79 +1,24 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using GameCore.GridSystem;
 using Interfaces;
 using Unity.Collections;
 using UnityEngine;
 using VContainer;
-using Random = UnityEngine.Random;
 
 namespace GameCore.Trie
 {
     public class TrieManager : MonoBehaviour, ITrieService
     {
-        Trie _trie = new Trie();
-        
-        private List<string> _dictionary = new List<string>()
-        {
-            "Merhaba",
-            "Alo",
-            "Ana",
-            "Bir",
-            "Cep",
-            "Do",
-            "Ev",
-            "Can",
-            "Ben",
-            "Arı",
-            "Su",
-            "Ay",
-            "El",
-            "Bal",
-            "Gül",
-            "Kuş",
-            "Yol",
-            "Deniz",
-            "Taş",
-            "Kum",
-            "Dağ",
-            "Kar",
-            "Ses",
-            "Dur",
-            "Gel",
-            "Git",
-            "Kal",
-            "Yaz",
-            "Kış",
-            "Bahçe",
-            "Evren",
-            "Yıldız",
-            "Ayak",
-            "Kedi",
-            "Köpek",
-            "Balık",
-            "Çiçek",
-            "Ağaç",
-            "Top",
-            "Kapı",
-            "Cam",
-            "Buz",
-            "Işık",
-            "Rüzgar",
-            "Yağmur",
-            "Bulut",
-            "Göl",
-            "Nehir",
-            "Orman",
-            "Köy",
-            "Şehir"
-        };
+        private Trie _trie;
         private GridManager _gridManager;
+        private IDictionaryService _dictionaryService;
 
         [Inject]
-        private void Construct(GridManager gridManager)
+        private void Construct(GridManager gridManager, IDictionaryService dictionaryService)
         {
+            _dictionaryService = dictionaryService;
             _gridManager = gridManager;
         }
         
@@ -87,10 +32,17 @@ namespace GameCore.Trie
             _trie?.Dispose(); //we dispose trie objects on destroy
         }
         
-        private void CreateTrie()
+        private async UniTask CreateTrie()
         {
+            var dictionaryReadSuccess = await _dictionaryService.DictionaryLoadTask;
+            if(!dictionaryReadSuccess)
+            {
+                Debug.LogError("Dictionary load failed. Not Creating Trie.");
+                return;
+            }
+            
             _trie = new Trie();
-            _trie.Build(_dictionary);
+            _trie.Build(_dictionaryService.LoadedWords);
         }
 
         public async UniTask<List<string>> SearchPossibleWords()

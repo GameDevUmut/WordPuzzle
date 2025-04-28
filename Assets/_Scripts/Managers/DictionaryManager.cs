@@ -25,7 +25,7 @@ namespace Managers
 
         #region Properties
 
-        public UniTask DictionaryLoadTask => _tcs.Task;
+        public UniTask<bool> DictionaryLoadTask => _tcs.Task;
 
         public List<string> LoadedWords { get; private set; } = new List<string>();
 

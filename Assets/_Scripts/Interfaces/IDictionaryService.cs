@@ -5,7 +5,7 @@ namespace Interfaces
 {
     public interface IDictionaryService
     {
-        public UniTask DictionaryLoadTask { get; }
+        public UniTask<bool> DictionaryLoadTask { get; }
 
         public List<string> LoadedWords { get; }
     }
