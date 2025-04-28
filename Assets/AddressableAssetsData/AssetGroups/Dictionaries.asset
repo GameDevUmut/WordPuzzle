@@ -17,7 +17,7 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 9f7cdbb7a6a3d614e898437b52206d76
   m_SerializeEntries:
-  - m_GUID: f5945d0218de83b488e507ecbbe0287b
+  - m_GUID: f61bdfc06e7d6aa479219750a0a46ee3
     m_Address: Dictionary_Turkish
     m_ReadOnly: 0
     m_SerializedLabels: []

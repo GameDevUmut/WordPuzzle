@@ -54,7 +54,8 @@ using UnityEngine;
 
             string sourceText = sourceFile.text;
             List<string> words = sourceText.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries)
-                .Select(word => word.Trim()).Where(word => !string.IsNullOrEmpty(word)).ToList();
+                .Select(word => word.Trim())
+                .Where(word => !string.IsNullOrEmpty(word) && word.Length >= 3).ToList();
 
             if (words.Count == 0)
             {
