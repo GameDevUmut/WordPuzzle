@@ -54,7 +54,7 @@ namespace GameCore.Trie
             }
         }
 
-        public void Build(List<string> dictionary)
+        public async UniTask Build(List<string> dictionary)
         {
             if (dictionary == null || dictionary.Count == 0)
             {
@@ -62,42 +62,47 @@ namespace GameCore.Trie
                 return;
             }
 
-            root = new TrieNode();
+            TrieNode newRoot = new TrieNode();
             isBuilt = false;
             int wordCount = 0;
 
-            foreach (string word in dictionary)
+            await Task.Run(() =>
             {
-                if (string.IsNullOrEmpty(word)) continue;
-                TrieNode currentNode = root;
-                bool wordAdded = false;
-                foreach (char c in word)
+                foreach (string word in dictionary)
                 {
-                    int charIndex = MapCharToIndex(c);
-                    if (charIndex == 0)
+                    if (string.IsNullOrEmpty(word)) continue;
+                    TrieNode currentNode = newRoot;
+                    bool wordAdded = false;
+                    foreach (char c in word)
                     {
-                        Debug.LogWarning($"Skipping invalid character '{c}' in word '{word}'.");
-                        continue;
+                        int charIndex = MapCharToIndex(c);
+                        if (charIndex == 0)
+                        {
+                            // Log warning outside Task.Run if needed, or use a thread-safe logger
+                            continue;
+                        }
+
+                        if (!currentNode.Children.TryGetValue(charIndex, out TrieNode nextNode))
+                        {
+                            nextNode = new TrieNode();
+                            currentNode.Children.Add(charIndex, nextNode);
+                        }
+
+                        currentNode = nextNode;
+                        wordAdded = true;
                     }
 
-                    if (!currentNode.Children.TryGetValue(charIndex, out TrieNode nextNode))
+                    if (wordAdded)
                     {
-                        nextNode = new TrieNode();
-                        currentNode.Children.Add(charIndex, nextNode);
+                        currentNode.IsEndOfWord = true;
+                        wordCount++;
                     }
-
-                    currentNode = nextNode;
-                    wordAdded = true;
                 }
+            });
 
-                if (wordAdded)
-                {
-                    currentNode.IsEndOfWord = true;
-                    wordCount++;
-                }
-            }
-
+            root = newRoot; // Assign the newly built root after the task completes
             isBuilt = true;
+            // Consider logging completion on the main thread if interacting with Unity APIs
             Debug.Log($"Standard Trie built with {wordCount} valid words.");
         }
 

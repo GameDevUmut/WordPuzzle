@@ -265,6 +265,7 @@ MonoBehaviour:
   autoInjectGameObjects:
   - {fileID: 9006956240636707810}
   sceneLoadManager: {fileID: 9006956240636707811}
+  dictionaryManager: {fileID: 1292700935}
 --- !u!4 &680312516
 Transform:
   m_ObjectHideFlags: 0
@@ -438,6 +439,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 856408367}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1292700935 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4621981791363247186, guid: 06d5374ae24736342b8d2b72362a8ccd,
+    type: 3}
+  m_PrefabInstance: {fileID: 9006956240636707809}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b65df61791a46039a6cfae3af13779d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &9006956240636707809
 PrefabInstance:
   m_ObjectHideFlags: 0

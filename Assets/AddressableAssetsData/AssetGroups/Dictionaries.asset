@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Dictionaries
+  m_EditorClassIdentifier: 
+  m_GroupName: Dictionaries
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 9f7cdbb7a6a3d614e898437b52206d76
+  m_SerializeEntries:
+  - m_GUID: f61bdfc06e7d6aa479219750a0a46ee3
+    m_Address: Dictionary_Turkish
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: bc31d5d171b7ff744b78a08784cd3e6a, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 88f84a2ef53f8774bbb2858b0cda2e95, type: 2}
+    - {fileID: 11400000, guid: 503b8326fd7974b4a90a78cfc63c810a, type: 2}
