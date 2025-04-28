@@ -103,7 +103,9 @@ namespace UI.Game.Grid
         private async UniTask CheckWord()
         {
             _isWritingLocked = true;
-            var success = await _trieService.TestifyWord(_stringBuilder.ToString());
+            var inputString = _stringBuilder.ToString();
+            if (inputString.Equals(String.Empty)) return;
+            var success = await _trieService.TestifyWord(inputString);
 
             Color targetColor = success ? formedSentenceSuccessColor : formedSentenceErrorColor;
             Sequence sequence = DOTween.Sequence();

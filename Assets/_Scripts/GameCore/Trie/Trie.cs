@@ -100,9 +100,8 @@ namespace GameCore.Trie
                 }
             });
 
-            root = newRoot; // Assign the newly built root after the task completes
+            root = newRoot;
             isBuilt = true;
-            // Consider logging completion on the main thread if interacting with Unity APIs
             Debug.Log($"Standard Trie built with {wordCount} valid words.");
         }
 
@@ -166,7 +165,7 @@ namespace GameCore.Trie
             currentPath[pathLength] = gridChar;
             int currentPathLength = pathLength + 1;
 
-            if (nextNode.IsEndOfWord)
+            if (nextNode.IsEndOfWord && currentPathLength >= 3)
             {
                 var word = new FixedString64Bytes();
                 for (int i = 0; i < currentPathLength; i++)
@@ -247,8 +246,6 @@ namespace GameCore.Trie
             root = null;
             isBuilt = false;
         }
-
-        ~Trie() { }
 
         #region Nested type: TrieNode
 
