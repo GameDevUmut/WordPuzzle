@@ -6,8 +6,7 @@ using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor
-{
+
     /// <summary>
     /// This editor script converts txt word lists to JSON format.
     /// </summary>
@@ -85,4 +84,4 @@ namespace Editor
 
         #endregion
     }
-}
+
