@@ -1,5 +1,4 @@
-﻿using System;
-using R3;
+﻿using R3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,21 +16,27 @@ namespace UI.Game.Grid
         #region Serializable Fields
 
         [SerializeField] private TextMeshProUGUI character;
-        [SerializeField] private Image backgroundImage;
+        [SerializeField] public Image backgroundImage;
         [SerializeField] private Color defaultColor;
-        [SerializeField] private Color selectedColor;
+        [SerializeField] public Color selectedColor;
 
         #endregion
 
         #region Fields
 
-        private char _characterValue;
-        private bool _isSelected;
         private readonly Subject<CellUI> _cellUISelected = new();
+
+        private char _characterValue;
+        private int _column;
+        private GridUI _gridUI;
+        private bool _isSelected;
+        private int _row;
 
         #endregion
 
         #region Properties
+
+        public Subject<CellUI> CellUISelected => _cellUISelected;
 
         public char CharacterValue
         {
@@ -43,7 +48,9 @@ namespace UI.Game.Grid
             }
         }
 
-        public Observable<CellUI> CellUISelected => _cellUISelected;
+        public int Column => _column;
+
+        public int Row => _row;
 
         #endregion
 
@@ -68,6 +75,13 @@ namespace UI.Game.Grid
             _isSelected = isSelected;
         }
 
+        public void SetGridPosition(int row, int column, GridUI gridUI)
+        {
+            _row = row;
+            _column = column;
+            _gridUI = gridUI;
+        }
+
         #endregion
 
         #region IPointerMoveHandler Members
@@ -76,9 +90,10 @@ namespace UI.Game.Grid
         {
             if (IsGridPointerDown && !_isSelected)
             {
-                backgroundImage.color = selectedColor;
-                _cellUISelected.OnNext(this);
-                ToggleSelect(true);
+                if (_gridUI != null)
+                {
+                    _gridUI.RequestCellSelection(this);
+                }
             }
         }
 

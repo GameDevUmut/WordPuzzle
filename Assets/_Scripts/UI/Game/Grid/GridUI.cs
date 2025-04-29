@@ -5,11 +5,9 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Interfaces;
 using R3;
-using R3.Triggers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using VContainer;
 
 namespace UI.Game.Grid
@@ -31,10 +29,11 @@ namespace UI.Game.Grid
         #region Fields
 
         private List<CellUI> _cells = new List<CellUI>();
-        private IGridService _gridService;
-        private StringBuilder _stringBuilder = new StringBuilder();
         private Color _formedSentenceDefaultColor;
+        private IGridService _gridService;
         private bool _isWritingLocked = false;
+        private CellUI _lastSelectedCell;
+        private StringBuilder _stringBuilder = new StringBuilder();
         private ITrieService _trieService;
 
         #endregion
@@ -56,6 +55,17 @@ namespace UI.Game.Grid
             formedSentenceText.text = _stringBuilder.ToString();
         }
 
+        public void RequestCellSelection(CellUI cell)
+        {
+            if (_lastSelectedCell == null || IsNeighbor(_lastSelectedCell, cell))
+            {
+                cell.backgroundImage.color = cell.selectedColor;
+                cell.CellUISelected.OnNext(cell);
+                cell.ToggleSelect(true);
+                _lastSelectedCell = cell;
+            }
+        }
+
         #endregion
 
         #region Private Methods
@@ -71,7 +81,6 @@ namespace UI.Game.Grid
 
         private void CreateGridUI()
         {
-            //clear existing cells
             _cells.Clear();
             foreach (Transform child in cellParent)
             {
@@ -80,10 +89,8 @@ namespace UI.Game.Grid
 
             int rows = _gridService.GridRows;
             int columns = _gridService.GridColumns;
-
             gridLayout.columns = columns;
             gridLayout.rows = rows;
-
             for (int r = 0; r < rows; r++)
             {
                 for (int c = 0; c < columns; c++)
@@ -95,6 +102,7 @@ namespace UI.Game.Grid
                         _cells.Add(cellUI);
                         char character = _gridService.GetCellCharacter(r, c);
                         cellUI.CharacterValue = character;
+                        cellUI.SetGridPosition(r, c, this);
                         cellUI.CellUISelected.Subscribe(EnterCharacter).AddTo(cellUI);
                     }
                     else
@@ -103,6 +111,8 @@ namespace UI.Game.Grid
                     }
                 }
             }
+
+            _lastSelectedCell = null;
         }
 
         private async UniTask CheckWord()
@@ -136,6 +146,13 @@ namespace UI.Game.Grid
             _isWritingLocked = false;
         }
 
+        private bool IsNeighbor(CellUI a, CellUI b)
+        {
+            int dr = Math.Abs(a.Row - b.Row);
+            int dc = Math.Abs(a.Column - b.Column);
+            return (dr <= 1 && dc <= 1) && !(dr == 0 && dc == 0);
+        }
+
         #endregion
 
         #region IPointerDownHandler Members
@@ -160,6 +177,7 @@ namespace UI.Game.Grid
                 cell.ToggleSelect(false);
             }
 
+            _lastSelectedCell = null;
             CheckWord().Forget();
         }
 
