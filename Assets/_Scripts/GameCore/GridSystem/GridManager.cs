@@ -1,3 +1,4 @@
+using R3;
 using Interfaces;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -22,6 +23,7 @@ namespace GameCore.GridSystem
         /// Holds the reference to the current game grid instance.
         /// </summary>
         private Grid currentGrid;
+        private readonly Subject<Unit> _gridCreated = new();
 
         #endregion
 
@@ -38,9 +40,16 @@ namespace GameCore.GridSystem
 
         void Awake()
         {
+            // Initialize the subject before creating the grid
+            // _gridCreated = new Subject<Unit>(); // It's better to initialize in the field declaration or constructor
             CreateGrid();
         }
-        
+
+        void OnDestroy()
+        {
+            _gridCreated.Dispose(); // Dispose the subject when the GameObject is destroyed
+        }
+
         #endregion
 
         #region Public Methods
@@ -78,6 +87,8 @@ namespace GameCore.GridSystem
             }
 
             Debug.Log($"Grid created with size {currentGrid.Columns}x{currentGrid.Rows}");
+            // NotifyObservers(gameObject, ObserverEventType.GridCreated); // Removed old notification
+            _gridCreated.OnNext(Unit.Default); // Trigger the R3 subject
         }
         
         #endregion
@@ -88,8 +99,12 @@ namespace GameCore.GridSystem
         public int GridColumns => currentGrid.Columns;
 
         public char GetCellCharacter(int row, int column) => currentGrid[row, column].Character;
-        
+
+        public Observable<Unit> GridCreated => _gridCreated; // Implement the new interface property
 
         #endregion
+
+        // public ISubject Subject => this; // Removed old property
+
     }
 }

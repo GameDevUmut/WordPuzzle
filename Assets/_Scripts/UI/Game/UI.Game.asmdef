@@ -13,15 +13,14 @@
         "GUID:da50c82750a56c247893f575a6c17018",
         "GUID:029c1c1b674aaae47a6841a0b89ad80e",
         "GUID:e0cd26848372d4e5c891c569017e11f1",
-        "General",
-        "R3"
+        "GUID:1c089d9e62e9db34b90b6cf2218feef8",
+        "GUID:77221876cc6b8244180b96e320b1bcd4"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
-    "precompiledReferences": [
-    ],
+    "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],

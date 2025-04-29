@@ -4,6 +4,8 @@ using System.Text;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Interfaces;
+using R3;
+using R3.Triggers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -23,8 +25,6 @@ namespace UI.Game.Grid
         [SerializeField] private TextMeshProUGUI formedSentenceText;
         [SerializeField] private Color formedSentenceErrorColor;
         [SerializeField] private Color formedSentenceSuccessColor;
-        
-        
 
         #endregion
 
@@ -46,11 +46,6 @@ namespace UI.Game.Grid
             _formedSentenceDefaultColor = formedSentenceText.color;
         }
 
-        private void Start()
-        {
-            CreateGridUI();
-        }
-
         #endregion
 
         #region Public Methods
@@ -60,7 +55,7 @@ namespace UI.Game.Grid
             _stringBuilder.Append(cell.CharacterValue);
             formedSentenceText.text = _stringBuilder.ToString();
         }
-        
+
         #endregion
 
         #region Private Methods
@@ -70,6 +65,8 @@ namespace UI.Game.Grid
         {
             _trieService = trieService;
             _gridService = gridService;
+
+            _gridService.GridCreated.Subscribe(_ => CreateGridUI()).AddTo(this);
         }
 
         private void CreateGridUI()
@@ -90,7 +87,7 @@ namespace UI.Game.Grid
                         _cells.Add(cellUI);
                         char character = _gridService.GetCellCharacter(r, c);
                         cellUI.CharacterValue = character;
-                        cellUI.OnCellUISelected += EnterCharacter;
+                        cellUI.CellUISelected.Subscribe(EnterCharacter).AddTo(cellUI);
                     }
                     else
                     {
@@ -113,14 +110,19 @@ namespace UI.Game.Grid
             if (!success)
             {
                 // Add horizontal shake if the word is incorrect
-                sequence.Join(formedSentenceText.transform.DOShakePosition(0.15f, strength: new Vector3(20, 0, 0), vibrato: 10, randomness: 90, fadeOut: true));
+                sequence.Join(formedSentenceText.transform.DOShakePosition(0.15f,
+                    strength: new Vector3(20, 0, 0),
+                    vibrato: 10,
+                    randomness: 90,
+                    fadeOut: true));
             }
+
             sequence.Append(formedSentenceText.DOColor(_formedSentenceDefaultColor, 0.2f));
 
             await sequence.Play();
 
             await UniTask.Delay(success ? 1000 : 300);
-            
+
             _stringBuilder.Clear();
             formedSentenceText.text = "";
             _isWritingLocked = false;
