@@ -10,16 +10,16 @@ namespace Interfaces
             MainScene,
             GameScene
         }
-        public UniTask Load(SceneName sceneName);
+        UniTask Load(SceneName sceneName);
         
-        public UniTask Load(string sceneName, bool unloadLast = false);
+        UniTask Load(string sceneName, bool unloadLast = false);
         
-        public UniTask UnloadLast();
+        UniTask UnloadLast();
         
-        public UniTask UnloadLastWithCount(int i);
+        UniTask UnloadLastWithCount(int i);
 
-        public void ToggleLoadingScreen(bool state);
-        public void ToggleSplashScreen(bool state);
+        void ToggleLoadingScreen(bool state);
+        void ToggleSplashScreen(bool state);
         
     }
 }

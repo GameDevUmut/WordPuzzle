@@ -8,7 +8,7 @@ namespace Interfaces
         int GridColumns { get; }
         char GetCellCharacter(int row, int column);
 
-        void ReCreateGrid();
+        void RecreateGrid();
         
         Observable<Unit> GridCreated { get; }
     }
