@@ -6,7 +6,8 @@
         "UnityEditor.TestRunner",
         "GameCore",
         "Unity.Collections",
-        "UniTask"
+        "UniTask",
+        "General"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
