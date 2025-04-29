@@ -20,7 +20,7 @@ namespace UI.Game.Grid
 
         [SerializeField] private GameObject cellPrefab;
         [SerializeField] private Transform cellParent;
-        [SerializeField] private GridLayoutGroup gridLayoutGroup;
+        [SerializeField] private FlexibleGridLayout gridLayout;
         [Header("Sentence Properties")]
         [SerializeField] private TextMeshProUGUI formedSentenceText;
         [SerializeField] private Color formedSentenceErrorColor;
@@ -81,7 +81,8 @@ namespace UI.Game.Grid
             int rows = _gridService.GridRows;
             int columns = _gridService.GridColumns;
 
-            gridLayoutGroup.constraintCount = columns;
+            gridLayout.columns = columns;
+            gridLayout.rows = rows;
 
             for (int r = 0; r < rows; r++)
             {
