@@ -71,6 +71,13 @@ namespace UI.Game.Grid
 
         private void CreateGridUI()
         {
+            //clear existing cells
+            _cells.Clear();
+            foreach (Transform child in cellParent)
+            {
+                Destroy(child.gameObject);
+            }
+
             int rows = _gridService.GridRows;
             int columns = _gridService.GridColumns;
 

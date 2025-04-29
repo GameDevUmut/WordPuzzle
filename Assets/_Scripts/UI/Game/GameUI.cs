@@ -16,6 +16,7 @@ namespace UI.Game
         #region Fields
 
         private ITrieService _trieService;
+        private IGridService _gridService;
 
         #endregion
 
@@ -29,6 +30,7 @@ namespace UI.Game
 
         public void OnRefillButtonClick()
         {
+            _gridService.RecreateGrid();
         }
 
         #endregion
@@ -36,8 +38,9 @@ namespace UI.Game
         #region Private Methods
 
         [Inject]
-        private void Construct(ITrieService trieService)
+        private void Construct(ITrieService trieService, IGridService gridService)
         {
+            _gridService = gridService;
             _trieService = trieService;
         }
 
