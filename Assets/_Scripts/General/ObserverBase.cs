@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Interfaces;
 using UnityEngine;
 
@@ -6,20 +7,27 @@ namespace General
 {
     public class ObserverBase : MonoBehaviour, IObserver
     {
-        protected ISubject Subject { get; set; }
+        protected List<ISubject> Subjects { get; set; }
+
+        protected ISubject _currentSubject;
 
         public virtual void ObserveSubject(ISubject subject)
         {
-            Subject = subject;
+            _currentSubject = subject;
+            Subjects.Add(_currentSubject);
 
-            if (Subject != null)
-                Subject.AddObserver(this);
+            if (_currentSubject != null)
+                _currentSubject.AddObserver(this);
         }
 
         protected void OnDestroy()
         {
-            if (Subject != null)
-                Subject.RemoveObserver(this);
+            if (Subjects != null)
+                foreach (var subject in Subjects)
+                {
+                    if (subject != null)
+                        subject.RemoveObserver(this);
+                }
         }
 
         public virtual void OnNotify(GameObject entity, ObserverEventType eventType)
