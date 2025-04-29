@@ -1,3 +1,4 @@
+using R3;
 using Interfaces;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -22,6 +23,7 @@ namespace GameCore.GridSystem
         /// Holds the reference to the current game grid instance.
         /// </summary>
         private Grid currentGrid;
+        private readonly Subject<Unit> _gridCreated = new();
 
         #endregion
 
@@ -40,7 +42,12 @@ namespace GameCore.GridSystem
         {
             CreateGrid();
         }
-        
+
+        void OnDestroy()
+        {
+            _gridCreated.Dispose(); 
+        }
+
         #endregion
 
         #region Public Methods
@@ -78,6 +85,7 @@ namespace GameCore.GridSystem
             }
 
             Debug.Log($"Grid created with size {currentGrid.Columns}x{currentGrid.Rows}");
+            _gridCreated.OnNext(Unit.Default); //trigger R3 subject
         }
         
         #endregion
@@ -88,7 +96,13 @@ namespace GameCore.GridSystem
         public int GridColumns => currentGrid.Columns;
 
         public char GetCellCharacter(int row, int column) => currentGrid[row, column].Character;
-        
+        public void RecreateGrid()
+        {
+            currentGrid = null; 
+            CreateGrid();
+        }
+
+        public Observable<Unit> GridCreated => _gridCreated;
 
         #endregion
     }

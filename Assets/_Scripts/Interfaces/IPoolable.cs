@@ -5,7 +5,7 @@ namespace Interfaces
 {
     public interface IPoolable
     {
-        public PooledObject PooledObject { get; set; }
-        public Action OnReturnToPool { get; set; }
+        PooledObject PooledObject { get; set; }
+        Action OnReturnToPool { get; set; }
     }
 }

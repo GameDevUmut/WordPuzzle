@@ -1,9 +1,15 @@
-﻿namespace Interfaces
+﻿using R3;
+
+namespace Interfaces
 {
     public interface IGridService
     {
-        public int GridRows { get; }
-        public int GridColumns { get; }
-        public char GetCellCharacter(int row, int column);
+        int GridRows { get; }
+        int GridColumns { get; }
+        char GetCellCharacter(int row, int column);
+
+        void RecreateGrid();
+        
+        Observable<Unit> GridCreated { get; }
     }
 }
