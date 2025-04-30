@@ -12,25 +12,24 @@ namespace GameCore.Trie
 {
     public class TrieManager : MonoBehaviour, ITrieService
     {
-        private Trie _trie;
+        private static Trie _trie;
         private GridManager _gridManager;
         private IDictionaryService _dictionaryService;
+        private IGameService _gameService;
 
         [Inject]
-        private void Construct(GridManager gridManager, IDictionaryService dictionaryService)
+        private void Construct(GridManager gridManager, IDictionaryService dictionaryService, IGameService gameService)
         {
+            _gameService = gameService;
             _dictionaryService = dictionaryService;
             _gridManager = gridManager;
         }
         
         private void Awake()
         {
-            CreateTrie();
-        }
-        
-        private void OnDestroy()
-        {
-            _trie?.Dispose(); //we dispose trie objects on destroy
+            if (_trie != null && _trie.IsBuilt) return;
+                
+            CreateTrie().Forget();
         }
         
         private async UniTask CreateTrie()
@@ -77,7 +76,10 @@ namespace GameCore.Trie
         
         public async UniTask<bool> TestifyWord(string word)
         {
-            return await _trie.FindSingleWord(word);
+            var result = await _trie.FindSingleWord(word);
+            if(result)
+                _gameService.AddFoundWord(word);
+            return result;
         }
     }
 }

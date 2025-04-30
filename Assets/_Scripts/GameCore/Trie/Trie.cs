@@ -28,6 +28,12 @@ namespace GameCore.Trie
             root = new TrieNode();
         }
 
+        public bool IsBuilt
+        {
+            get => isBuilt;
+            set => isBuilt = value;
+        }
+
         #region IDisposable Members
 
         public void Dispose()
@@ -78,7 +84,6 @@ namespace GameCore.Trie
                         int charIndex = MapCharToIndex(c);
                         if (charIndex == 0)
                         {
-                            // Log warning outside Task.Run if needed, or use a thread-safe logger
                             continue;
                         }
 

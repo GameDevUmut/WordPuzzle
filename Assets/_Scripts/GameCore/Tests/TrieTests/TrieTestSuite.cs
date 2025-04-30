@@ -108,7 +108,7 @@ namespace GameCore.Tests.TrieTests
             {
                 using (Trie.Trie trie = new Trie.Trie())
                 {
-                    trie.Build(words);
+                    await trie.Build(words);
                     
                     Debug.Log($"Trie built with {words.Count} words.");
 
@@ -119,7 +119,7 @@ namespace GameCore.Tests.TrieTests
                         Debug.Log("--- Found Words ---");
                         foreach (var word in nativeList)
                         {
-                            Debug.Log(word.ToString()); // Convert FixedString to string for logging
+                            Debug.Log(word.ToString());
                         }
                         Debug.Log("--- End Found Words ---");
                     }

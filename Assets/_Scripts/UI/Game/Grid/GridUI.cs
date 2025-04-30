@@ -29,11 +29,13 @@ namespace UI.Game.Grid
 
         private List<CellUI> _cells = new List<CellUI>();
         private Color _formedSentenceDefaultColor;
+        private IGameService _gameService;
         private IGridService _gridService;
         private bool _isWritingLocked = false;
         private CellUI _lastSelectedCell;
         private StringBuilder _stringBuilder = new StringBuilder();
         private ITrieService _trieService;
+        private bool _gameEnded = false;
 
         #endregion
 
@@ -41,7 +43,7 @@ namespace UI.Game.Grid
 
         public bool IsWritingLocked
         {
-            get => _isWritingLocked;
+            get => _gameEnded || _isWritingLocked;
             set => _isWritingLocked = value;
         }
 
@@ -52,6 +54,13 @@ namespace UI.Game.Grid
         private void Awake()
         {
             _formedSentenceDefaultColor = formedSentenceText.color;
+            SubscribeToGameOver();
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus)
+                _isWritingLocked = false;
         }
 
         #endregion
@@ -86,8 +95,9 @@ namespace UI.Game.Grid
         #region Private Methods
 
         [Inject]
-        private void Construct(IGridService gridService, ITrieService trieService)
+        private void Construct(IGridService gridService, ITrieService trieService, IGameService gameService)
         {
+            _gameService = gameService;
             _trieService = trieService;
             _gridService = gridService;
 
@@ -132,9 +142,9 @@ namespace UI.Game.Grid
 
         private async UniTask CheckWord()
         {
-            _isWritingLocked = true;
             var inputString = _stringBuilder.ToString();
             if (inputString.Equals(String.Empty)) return;
+            _isWritingLocked = true;
             var success = await _trieService.TestifyWord(inputString);
 
             Color targetColor = success ? formedSentenceSuccessColor : formedSentenceErrorColor;
@@ -159,6 +169,14 @@ namespace UI.Game.Grid
             _stringBuilder.Clear();
             formedSentenceText.text = "";
             _isWritingLocked = false;
+        }
+
+        private void SubscribeToGameOver()
+        {
+            _gameService.GameEnded.Subscribe(_ =>
+            {
+                _gameEnded = true;
+            });
         }
 
         private bool IsNeighbor(CellUI a, CellUI b)
