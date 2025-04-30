@@ -15,18 +15,11 @@ namespace GameCore
         [SerializeField] private int gameTimerSeconds = 90;
 
         #endregion
-        
+
+        #region Fields
+
         private List<string> _foundWords = new List<string>();
         private CancellationTokenSource _tokenSource;
-
-        #region Public Methods
-
-        public void AddFoundWord(string word) 
-        {
-            if (string.IsNullOrEmpty(word) || _foundWords.Contains(word)) return;
-            _foundWords.Add(word);
-            FoundWords.Value++;
-        }
 
         #endregion
 
@@ -49,7 +42,7 @@ namespace GameCore
         {
             OnGameStart(_tokenSource.Token).Forget();
         }
-        
+
         private void OnDestroy()
         {
             _tokenSource?.Cancel();
@@ -89,6 +82,13 @@ namespace GameCore
         #endregion
 
         #region IGameService Members
+
+        public void AddFoundWord(string word)
+        {
+            if (string.IsNullOrEmpty(word) || _foundWords.Contains(word)) return;
+            _foundWords.Add(word);
+            FoundWords.Value++;
+        }
 
         public ReactiveProperty<int> FoundWords { get; private set; } = new ReactiveProperty<int>(0);
 
