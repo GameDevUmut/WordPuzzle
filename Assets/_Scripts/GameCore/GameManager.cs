@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Interfaces;
 using R3;
@@ -16,6 +17,7 @@ namespace GameCore
         #endregion
         
         private List<string> _foundWords = new List<string>();
+        private CancellationTokenSource _tokenSource;
 
         #region Public Methods
 
@@ -32,6 +34,7 @@ namespace GameCore
 
         private void Awake()
         {
+            _tokenSource = new CancellationTokenSource();
             Timer.Value = gameTimerSeconds;
             Timer.Subscribe(value =>
             {
@@ -44,25 +47,38 @@ namespace GameCore
 
         private void Start()
         {
-            OnGameStart().Forget();
+            OnGameStart(_tokenSource.Token).Forget();
+        }
+        
+        private void OnDestroy()
+        {
+            _tokenSource?.Cancel();
         }
 
         #endregion
 
         #region Private Methods
 
-        private async UniTask OnGameStart()
+        private async UniTask OnGameStart(CancellationToken token)
         {
             Timer.Value = gameTimerSeconds;
             FoundWords.Value = 0;
-
-            while (Timer.Value > 0)
-            {
-                await UniTask.Delay(TimeSpan.FromSeconds(1));
-                Timer.Value--;
-            }
-
             GameStarted.OnNext(Unit.Default);
+
+            while (Timer.Value > 0 && !_tokenSource.Token.IsCancellationRequested)
+            {
+                try
+                {
+                    await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: token);
+                    Timer.Value--;
+                }
+                catch (OperationCanceledException e)
+                {
+                    //on cancel
+                    Debug.Log("Timer cancelled");
+                    break;
+                }
+            }
         }
 
         private void OnGameOver()

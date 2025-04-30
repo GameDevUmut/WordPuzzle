@@ -14,6 +14,8 @@ namespace UI.Game
         #region Serializable Fields
 
         [SerializeField] private FoundWordsPopup foundWordsPopup;
+        [SerializeField] private GameOverPopup gameOverPopup;
+        
         [SerializeField] private TMP_Text timerText;
         [SerializeField] private TMP_Text foundWordsText;
 
@@ -27,6 +29,7 @@ namespace UI.Game
         private Color _timerOriginalColor, _foundWordsOriginalColor;
 
         private ITrieService _trieService;
+        private ISceneLoadService _sceneLoadService;
 
         #endregion
 
@@ -42,6 +45,7 @@ namespace UI.Game
         {
             SubscribeToTimer();
             SubscribeToFoundWords();
+            SubscribeToGameOver();
         }
 
         #endregion
@@ -57,6 +61,12 @@ namespace UI.Game
         public void OnRefillButtonClick()
         {
             _gridService.RecreateGrid();
+        }
+
+        public void OnMainMenuButtonClick()
+        {
+            _sceneLoadService.UnloadLast();
+            _sceneLoadService.Load(ISceneLoadService.SceneName.MainScene);
         }
 
         #endregion
@@ -91,9 +101,18 @@ namespace UI.Game
             });
         }
 
-        [Inject]
-        private void Construct(ITrieService trieService, IGridService gridService, IGameService gameService)
+        private void SubscribeToGameOver()
         {
+            _gameService.GameEnded.Subscribe(_ =>
+            {
+                gameOverPopup.ShowPopup();
+            });
+        }
+
+        [Inject]
+        private void Construct(ITrieService trieService, IGridService gridService, IGameService gameService, ISceneLoadService sceneLoadService)
+        {
+            _sceneLoadService = sceneLoadService;
             _gameService = gameService;
             _gridService = gridService;
             _trieService = trieService;
