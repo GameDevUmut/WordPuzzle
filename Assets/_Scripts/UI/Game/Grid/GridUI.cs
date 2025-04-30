@@ -7,12 +7,11 @@ using Interfaces;
 using R3;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using VContainer;
 
 namespace UI.Game.Grid
 {
-    public class GridUI : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
+    public class GridUI : MonoBehaviour
     {
         #region Serializable Fields
 
@@ -38,6 +37,16 @@ namespace UI.Game.Grid
 
         #endregion
 
+        #region Properties
+
+        public bool IsWritingLocked
+        {
+            get => _isWritingLocked;
+            set => _isWritingLocked = value;
+        }
+
+        #endregion
+
         #region Unity Methods
 
         private void Awake()
@@ -48,6 +57,12 @@ namespace UI.Game.Grid
         #endregion
 
         #region Public Methods
+
+        public void OnCellPointerUp()
+        {
+            _lastSelectedCell = null;
+            CheckWord().Forget();
+        }
 
         public void EnterCharacter(CellUI cell)
         {
@@ -102,7 +117,7 @@ namespace UI.Game.Grid
                         _cells.Add(cellUI);
                         char character = _gridService.GetCellCharacter(r, c);
                         cellUI.CharacterValue = character;
-                        cellUI.SetGridPosition(r, c, this);
+                        cellUI.Initialize(r, c, this);
                         cellUI.CellUISelected.Subscribe(EnterCharacter).AddTo(cellUI);
                     }
                     else
@@ -151,34 +166,6 @@ namespace UI.Game.Grid
             int dr = Math.Abs(a.Row - b.Row);
             int dc = Math.Abs(a.Column - b.Column);
             return (dr <= 1 && dc <= 1) && !(dr == 0 && dc == 0);
-        }
-
-        #endregion
-
-        #region IPointerDownHandler Members
-
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            if (_isWritingLocked) return;
-            CellUI.IsGridPointerDown = true;
-        }
-
-        #endregion
-
-        #region IPointerUpHandler Members
-
-        public void OnPointerUp(PointerEventData eventData)
-        {
-            if (_isWritingLocked || !CellUI.IsGridPointerDown) return;
-            CellUI.IsGridPointerDown = false;
-            foreach (var cell in _cells)
-            {
-                cell.OnUp();
-                cell.ToggleSelect(false);
-            }
-
-            _lastSelectedCell = null;
-            CheckWord().Forget();
         }
 
         #endregion
