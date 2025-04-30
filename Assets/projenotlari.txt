@@ -8,12 +8,14 @@ Fakat bazı yerlerde thread parallelization gerektiğinden Task.Run da kullandı
 aratırken kullandım ki Unity main thread etkilenmesin.
 Sözlük veritabanı olarak githubdan TDK'daki Türkçe kelimeleri içeren bir text dosyası buldum, buradaki sözcükleri bir editor tool
 yardımı ile JSON formatına çevirip listelettim. JSON dosyası text asset olarak addressable'lardan yüklenmekte ve Newtonsoft JSON ile deserialize edilmekte.
-Bu sayede gerek duyulduğu takdirde memoryden kolayca release edilebilir.
+Bu sayede gerek duyulduğu takdirde memoryden kolayca release edilebilir. TDK sözlükteki kelimeleri 3 harf ve üstüyle sınırladım, tek harf ve 2 harfli
+kelimeler çok fazla eşleşme yapıyordu.
 
 Observer patternı R3 librarysi ile implement ettim, ReactiveProperty'ler ile UI'ın kolayca dinamik güncellenmesini sağlıyoruz. Oyunu geliştirmek
 istediğimiz takdirde bize daha kompleks event triggerları kurmamız için olanak sağlıyor.
 Bunun dışında basit animasyonlar/tweenler için DOTween'den faydalandım. 
 Art tarafını da biraz olsun görsellik katmak amacıyla Imagen 3 gibi resim oluşturucu generative ai'lar ve hazır UI paketi ile çözdüm.
+Farklı aspect ratiolara uygun çalışacak şekilde responsive UI ekledim.
 
 Teşekkür ederim,
 Umut Can ERYILDIZ

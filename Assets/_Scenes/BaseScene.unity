@@ -431,36 +431,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7152789563497862424, guid: 61f8c1831e0f19041b44c1effa3bd74a,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7152789563497862424, guid: 61f8c1831e0f19041b44c1effa3bd74a,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7152789563497862424, guid: 61f8c1831e0f19041b44c1effa3bd74a,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7152789563497862424, guid: 61f8c1831e0f19041b44c1effa3bd74a,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7152789563497862424, guid: 61f8c1831e0f19041b44c1effa3bd74a,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7152789563497862424, guid: 61f8c1831e0f19041b44c1effa3bd74a,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7253665901870402800, guid: 61f8c1831e0f19041b44c1effa3bd74a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -623,7 +593,27 @@ PrefabInstance:
     - target: {fileID: 2588762142618793878, guid: 521719748fc3aec41b7ce1d9338ac72c,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 4033.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 6009687129123774014, guid: 521719748fc3aec41b7ce1d9338ac72c,
+        type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6009687129123774014, guid: 521719748fc3aec41b7ce1d9338ac72c,
+        type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0.736
+      objectReference: {fileID: 0}
+    - target: {fileID: 6009687129123774014, guid: 521719748fc3aec41b7ce1d9338ac72c,
+        type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1080
+      objectReference: {fileID: 0}
+    - target: {fileID: 6009687129123774014, guid: 521719748fc3aec41b7ce1d9338ac72c,
+        type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 1920
       objectReference: {fileID: 0}
     - target: {fileID: 6160610401066030572, guid: 521719748fc3aec41b7ce1d9338ac72c,
         type: 3}
