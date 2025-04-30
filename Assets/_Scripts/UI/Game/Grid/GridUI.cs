@@ -54,6 +54,12 @@ namespace UI.Game.Grid
             _formedSentenceDefaultColor = formedSentenceText.color;
         }
 
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus)
+                _isWritingLocked = false;
+        }
+
         #endregion
 
         #region Public Methods
@@ -132,9 +138,9 @@ namespace UI.Game.Grid
 
         private async UniTask CheckWord()
         {
-            _isWritingLocked = true;
             var inputString = _stringBuilder.ToString();
             if (inputString.Equals(String.Empty)) return;
+            _isWritingLocked = true;
             var success = await _trieService.TestifyWord(inputString);
 
             Color targetColor = success ? formedSentenceSuccessColor : formedSentenceErrorColor;
