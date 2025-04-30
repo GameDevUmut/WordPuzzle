@@ -12,7 +12,7 @@ namespace GameCore.Trie
 {
     public class TrieManager : MonoBehaviour, ITrieService
     {
-        private Trie _trie;
+        private static Trie _trie;
         private GridManager _gridManager;
         private IDictionaryService _dictionaryService;
         private IGameService _gameService;
@@ -27,12 +27,9 @@ namespace GameCore.Trie
         
         private void Awake()
         {
-            CreateTrie();
-        }
-        
-        private void OnDestroy()
-        {
-            _trie?.Dispose(); //we dispose trie objects on destroy
+            if (_trie != null && _trie.IsBuilt) return;
+                
+            CreateTrie().Forget();
         }
         
         private async UniTask CreateTrie()
