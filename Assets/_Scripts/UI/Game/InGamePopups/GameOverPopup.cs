@@ -26,7 +26,7 @@ namespace UI.Game.InGamePopups
         public void ShowPopup()
         {
             gameObject.SetActive(true);
-            foundWordsText.text = _gameService.FoundWords.Value.ToString();
+            foundWordsText.text = $"Bulunan Kelime: {_gameService.FoundWords.Value.ToString()}";
         }
 
         public void OnMainMenuButtonClick()
