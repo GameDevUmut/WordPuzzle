@@ -15,10 +15,12 @@ namespace GameCore.Trie
         private Trie _trie;
         private GridManager _gridManager;
         private IDictionaryService _dictionaryService;
+        private IGameService _gameService;
 
         [Inject]
-        private void Construct(GridManager gridManager, IDictionaryService dictionaryService)
+        private void Construct(GridManager gridManager, IDictionaryService dictionaryService, IGameService gameService)
         {
+            _gameService = gameService;
             _dictionaryService = dictionaryService;
             _gridManager = gridManager;
         }
@@ -77,7 +79,10 @@ namespace GameCore.Trie
         
         public async UniTask<bool> TestifyWord(string word)
         {
-            return await _trie.FindSingleWord(word);
+            var result = await _trie.FindSingleWord(word);
+            if(result)
+                _gameService.AddFoundWord(word);
+            return result;
         }
     }
 }
