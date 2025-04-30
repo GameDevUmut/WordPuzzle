@@ -5,16 +5,13 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Interfaces;
 using R3;
-using R3.Triggers;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using VContainer;
 
 namespace UI.Game.Grid
 {
-    public class GridUI : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
+    public class GridUI : MonoBehaviour
     {
         #region Serializable Fields
 
@@ -31,11 +28,22 @@ namespace UI.Game.Grid
         #region Fields
 
         private List<CellUI> _cells = new List<CellUI>();
-        private IGridService _gridService;
-        private StringBuilder _stringBuilder = new StringBuilder();
         private Color _formedSentenceDefaultColor;
+        private IGridService _gridService;
         private bool _isWritingLocked = false;
+        private CellUI _lastSelectedCell;
+        private StringBuilder _stringBuilder = new StringBuilder();
         private ITrieService _trieService;
+
+        #endregion
+
+        #region Properties
+
+        public bool IsWritingLocked
+        {
+            get => _isWritingLocked;
+            set => _isWritingLocked = value;
+        }
 
         #endregion
 
@@ -50,10 +58,27 @@ namespace UI.Game.Grid
 
         #region Public Methods
 
+        public void OnCellPointerUp()
+        {
+            _lastSelectedCell = null;
+            CheckWord().Forget();
+        }
+
         public void EnterCharacter(CellUI cell)
         {
             _stringBuilder.Append(cell.CharacterValue);
             formedSentenceText.text = _stringBuilder.ToString();
+        }
+
+        public void RequestCellSelection(CellUI cell)
+        {
+            if (_lastSelectedCell == null || IsNeighbor(_lastSelectedCell, cell))
+            {
+                cell.backgroundImage.color = cell.selectedColor;
+                cell.CellUISelected.OnNext(cell);
+                cell.ToggleSelect(true);
+                _lastSelectedCell = cell;
+            }
         }
 
         #endregion
@@ -71,7 +96,6 @@ namespace UI.Game.Grid
 
         private void CreateGridUI()
         {
-            //clear existing cells
             _cells.Clear();
             foreach (Transform child in cellParent)
             {
@@ -80,10 +104,8 @@ namespace UI.Game.Grid
 
             int rows = _gridService.GridRows;
             int columns = _gridService.GridColumns;
-
             gridLayout.columns = columns;
             gridLayout.rows = rows;
-
             for (int r = 0; r < rows; r++)
             {
                 for (int c = 0; c < columns; c++)
@@ -95,6 +117,7 @@ namespace UI.Game.Grid
                         _cells.Add(cellUI);
                         char character = _gridService.GetCellCharacter(r, c);
                         cellUI.CharacterValue = character;
+                        cellUI.Initialize(r, c, this);
                         cellUI.CellUISelected.Subscribe(EnterCharacter).AddTo(cellUI);
                     }
                     else
@@ -103,6 +126,8 @@ namespace UI.Game.Grid
                     }
                 }
             }
+
+            _lastSelectedCell = null;
         }
 
         private async UniTask CheckWord()
@@ -136,31 +161,11 @@ namespace UI.Game.Grid
             _isWritingLocked = false;
         }
 
-        #endregion
-
-        #region IPointerDownHandler Members
-
-        public void OnPointerDown(PointerEventData eventData)
+        private bool IsNeighbor(CellUI a, CellUI b)
         {
-            if (_isWritingLocked) return;
-            CellUI.IsGridPointerDown = true;
-        }
-
-        #endregion
-
-        #region IPointerUpHandler Members
-
-        public void OnPointerUp(PointerEventData eventData)
-        {
-            if (_isWritingLocked || !CellUI.IsGridPointerDown) return;
-            CellUI.IsGridPointerDown = false;
-            foreach (var cell in _cells)
-            {
-                cell.OnUp();
-                cell.ToggleSelect(false);
-            }
-
-            CheckWord().Forget();
+            int dr = Math.Abs(a.Row - b.Row);
+            int dc = Math.Abs(a.Column - b.Column);
+            return (dr <= 1 && dc <= 1) && !(dr == 0 && dc == 0);
         }
 
         #endregion
