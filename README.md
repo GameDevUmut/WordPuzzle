@@ -1,6 +1,6 @@
 # Word Grid Game - Unity Project
 
-A word-finding grid game inspired by Zynga's Boggle, where players find words in a grid of letters. This repository showcases modern Unity development practices with clean architecture and robust systems.
+A word-finding grid game inspired by Boggle, where players find words in a grid of letters. This repository showcases modern Unity development practices with clean architecture and robust systems.
 
 ## Technical Architecture
 
